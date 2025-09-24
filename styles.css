@@ -23,12 +23,14 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth; overflow-x: hidden}
 body{
   margin:0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--ink);
   background: var(--white);
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Floating cones background canvas */
@@ -38,7 +40,7 @@ body{
 .cone{position:absolute;opacity:.12;animation:float var(--dur,12s) linear infinite;will-change:transform}
 @keyframes float{from{transform:translateY(110vh) rotate(0deg)} to{transform:translateY(-20vh) rotate(180deg)}}
 
-.container{width:min(1120px,92%);margin:0 auto}
+.container{width:min(1120px,95%);margin:0 auto;padding:0 16px}
 .section{padding: clamp(64px, 10vw, 120px) 0}
 .muted{color:var(--ink-70)}
 
@@ -66,7 +68,7 @@ body{
   .nav-menu::before{content:"Menu";font-weight:800;letter-spacing:.06em;color:var(--ink-70);text-transform:uppercase;margin:6px 6px 10px}
   .nav-menu li{margin:6px 0}
   .nav-menu.open{left:0}
-  .nav-menu a{border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+  .nav-menu a{border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left}
 }
 
 /* Sidebar overlay for mobile nav */
@@ -100,6 +102,13 @@ body{
   .btn{padding:12px 16px;border-radius:12px}
   .service img{height:180px}
   .gallery-grid img{height:auto}
+  
+  /* Additional mobile fixes */
+  .container{padding:0 8px}
+  .hero h1{font-size:28px;line-height:1.2}
+  .subhead{font-size:16px}
+  .cta-row{flex-direction:column;gap:8px}
+  .cta-row .btn{width:100%;justify-content:center}
 }
 
 /* About */
@@ -148,12 +157,15 @@ body{
   .gallery-grid img{grid-column:span 3}
 }
 @media (max-width: 680px){
+  /* Mobile container adjustments */
+  .container{padding:0 12px;width:100%;max-width:100%}
+  
   /* Default mobile gallery behavior (will be overridden by slider mode) */
-  .gallery-grid{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-  .gallery-grid img{flex:0 0 auto;height:220px;width:auto;aspect-ratio:auto;object-fit:cover;scroll-snap-align:center}
+  .gallery-grid{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;width:100%}
+  .gallery-grid img{flex:0 0 auto;height:220px;width:auto;aspect-ratio:auto;object-fit:cover;scroll-snap-align:center;max-width:100%}
 
   /* Slider mode: one image at a time, auto-rotating */
-  .gallery-grid.gallery-slider{position:relative;display:block;height:240px;overflow:hidden;padding:0}
+  .gallery-grid.gallery-slider{position:relative;display:block;height:240px;overflow:hidden;padding:0;width:100%}
   .gallery-grid.gallery-slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
   .gallery-grid.gallery-slider img.active{opacity:1}
 
@@ -236,5 +248,34 @@ body{
 /* Micro animations */
 [data-reveal]{opacity:0;transform:translateY(14px);transition:all .6s ease}
 [data-reveal].visible{opacity:1;transform:none}
+
+/* Mobile viewport fixes */
+@media (max-width: 768px) {
+  * {
+    max-width: 100%;
+  }
+  
+  .hero-media img,
+  .service img,
+  .gallery-grid img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .shop-pack {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .about-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .service-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
 
 

@@ -19,6 +19,17 @@ if (navToggle && navMenu) {
       navOverlay.classList.remove('show');
     });
   }
+  
+  // Close mobile menu when clicking on nav links
+  const navLinks = navMenu.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (navOverlay){ navOverlay.classList.remove('show'); }
+    });
+  });
 }
 
 // Reveal on scroll
