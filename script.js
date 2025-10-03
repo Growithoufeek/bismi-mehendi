@@ -211,19 +211,40 @@ if (toTop){
   });
 }
 
-// Mobile-only auto slider for gallery
+// Responsive gallery slider (mobile fade, desktop carousel)
 (function(){
   const grid = document.querySelector('.gallery-grid');
   if (!grid) return;
   const dotsWrap = document.getElementById('gallery-dots');
 
-  function enableSlider(){
+  let desktopTimer = null;
+  let mobileTimer = null;
+  let desktopIndex = 0;
+  let desktopPages = 1;
+  let itemsPerPage = 3;
+  let track = null;
+
+  function clearTimers(){
+    if (desktopTimer) { clearInterval(desktopTimer); desktopTimer = null; }
+    if (mobileTimer) { clearInterval(mobileTimer); mobileTimer = null; }
+  }
+
+  // Mobile: fade one image at a time
+  function enableMobile(){
+    clearTimers();
+    // Ensure images are direct children of grid
+    if (track){
+      const imgs = Array.from(track.querySelectorAll('img'));
+      imgs.forEach(img => grid.appendChild(img));
+      track.remove();
+      track = null;
+    }
     grid.classList.add('gallery-slider');
     const images = Array.from(grid.querySelectorAll('img'));
     let i = 0;
     images.forEach((img, idx) => img.classList.toggle('active', idx===0));
 
-    // Build dots
+    // Dots per image
     if (dotsWrap){
       dotsWrap.innerHTML = '';
       images.forEach((_, idx)=>{
@@ -237,70 +258,258 @@ if (toTop){
       });
     }
     const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.gallery-dot')) : [];
-    let timer = setInterval(()=>{
+    mobileTimer = setInterval(()=>{
       images[i].classList.remove('active');
       i = (i+1)%images.length;
       images[i].classList.add('active');
-      if (dots[i-1]) dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i)));
+      if (dots.length){ dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i))); }
     }, 2800);
 
-    // Touch to advance
+    // Touch advance
     let startX = 0;
-    grid.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; clearInterval(timer); }, {passive:true});
-    grid.addEventListener('touchend', (e)=>{
+    grid.onTouchStartHandler && grid.removeEventListener('touchstart', grid.onTouchStartHandler);
+    grid.onTouchEndHandler && grid.removeEventListener('touchend', grid.onTouchEndHandler);
+    grid.onTouchStartHandler = (e)=>{ startX = e.touches[0].clientX; clearTimers(); };
+    grid.onTouchEndHandler = (e)=>{
       const dx = (e.changedTouches[0]?.clientX||0) - startX;
       images[i].classList.remove('active');
-      if (Math.abs(dx) > 24){
-        i = (i + (dx<0?1:images.length-1)) % images.length;
-      } else {
-        i = (i+1)%images.length;
-      }
+      if (Math.abs(dx) > 24){ i = (i + (dx<0?1:images.length-1)) % images.length; }
+      else { i = (i+1)%images.length; }
       images[i].classList.add('active');
       if (dots.length){ dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i))); }
-      timer = setInterval(()=>{
+      mobileTimer = setInterval(()=>{
         images[i].classList.remove('active');
         i = (i+1)%images.length;
         images[i].classList.add('active');
         if (dots.length){ dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i))); }
       }, 2800);
-    });
+    };
+    grid.addEventListener('touchstart', grid.onTouchStartHandler, {passive:true});
+    grid.addEventListener('touchend', grid.onTouchEndHandler, {passive:true});
+  }
+
+  // Desktop: carousel with centered pages
+  function enableDesktop(){
+    clearTimers();
+    grid.classList.remove('gallery-slider');
+
+    // Wrap images into a track if needed
+    if (!track){
+      track = document.createElement('div');
+      track.className = 'gallery-track';
+      const imgs = Array.from(grid.querySelectorAll('img'));
+      imgs.forEach(img => track.appendChild(img));
+      grid.appendChild(track);
+    }
+
+    const images = Array.from(track.querySelectorAll('img'));
+    // Estimate items per page based on container width and typical image width
+    const containerWidth = grid.clientWidth;
+    const sampleWidth = images[0]?.getBoundingClientRect().width || 240;
+    const gap = 10; // synced with CSS
+    itemsPerPage = Math.max(1, Math.floor((containerWidth + gap) / (sampleWidth + gap)));
+    desktopPages = Math.max(1, Math.ceil(images.length / itemsPerPage));
+    desktopIndex = 0;
+
+    // Center content by padding track
+    const totalContentWidth = images.reduce((w,img)=> w + (img.getBoundingClientRect().width || sampleWidth) + gap, -gap);
+    const sidePad = Math.max(0, (containerWidth - Math.min(containerWidth, totalContentWidth)) / 2);
+    track.style.paddingLeft = sidePad + 'px';
+    track.style.paddingRight = sidePad + 'px';
+
+    // Build dots per page
+    if (dotsWrap){
+      dotsWrap.innerHTML = '';
+      for (let d=0; d<desktopPages; d++){
+        const b = document.createElement('button');
+        b.className = 'gallery-dot';
+        b.setAttribute('aria-label', `Page ${d+1}`);
+        b.setAttribute('role', 'tab');
+        b.dataset.index = String(d);
+        if (d===0) b.setAttribute('aria-selected','true');
+        dotsWrap.appendChild(b);
+      }
+    }
+    const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.gallery-dot')) : [];
+
+    function applyDesktopTransform(){
+      const pageWidth = grid.clientWidth;
+      const x = -desktopIndex * pageWidth;
+      track.style.transform = `translateX(${x}px)`;
+      if (dots.length){ dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===desktopIndex))); }
+    }
+
+    // Autoplay
+    desktopTimer = setInterval(()=>{
+      desktopIndex = (desktopIndex + 1) % desktopPages;
+      applyDesktopTransform();
+    }, 3500);
 
     // Dots click
     if (dots.length){
       dots.forEach(dot => {
         dot.addEventListener('click', ()=>{
-          clearInterval(timer);
-          const idx = Number(dot.dataset.index||0);
-          images[i].classList.remove('active');
-          i = idx % images.length;
-          images[i].classList.add('active');
-          dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i)));
-          timer = setInterval(()=>{
-            images[i].classList.remove('active');
-            i = (i+1)%images.length;
-            images[i].classList.add('active');
-            dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===i)));
-          }, 2800);
+          clearTimers();
+          desktopIndex = Number(dot.dataset.index||0) % desktopPages;
+          applyDesktopTransform();
+          desktopTimer = setInterval(()=>{
+            desktopIndex = (desktopIndex + 1) % desktopPages;
+            applyDesktopTransform();
+          }, 3500);
         });
       });
     }
+
+    // Resize handler to recalc
+    enableDesktop.recalc && window.removeEventListener('resize', enableDesktop.recalc);
+    enableDesktop.recalc = ()=>{
+      // Re-run setup on resize to keep pages accurate
+      enableDesktop();
+    };
+    window.addEventListener('resize', enableDesktop.recalc);
+
+    applyDesktopTransform();
   }
 
-  function disableSlider(){
+  function disableAll(){
+    clearTimers();
     grid.classList.remove('gallery-slider');
-    const images = Array.from(grid.querySelectorAll('img'));
-    images.forEach(img => img.classList.remove('active'));
+    if (track){
+      track.style.transform = '';
+      track.style.paddingLeft = '';
+      track.style.paddingRight = '';
+    }
     if (dotsWrap){ dotsWrap.innerHTML = ''; }
   }
 
   function update(){
-    if (window.innerWidth <= 680){ enableSlider(); }
-    else{ disableSlider(); }
+    if (window.innerWidth <= 680){ enableMobile(); }
+    else { enableDesktop(); }
   }
 
   update();
+  // Note: enableDesktop attaches its own resize recalculation.
   window.addEventListener('resize', update);
 })();
 
+// Gallery Lightbox: open on image click, with next/prev and zoom
+(function(){
+  const grid = document.querySelector('.gallery-grid');
+  const lightbox = document.getElementById('lightbox');
+  if (!grid || !lightbox) return;
+  const stageImg = document.getElementById('lightbox-image');
+  const dotsWrap = document.getElementById('lightbox-dots');
+  const btnClose = lightbox.querySelector('.lightbox-close');
+  const btnPrev = lightbox.querySelector('.lightbox-prev');
+  const btnNext = lightbox.querySelector('.lightbox-next');
 
+  let images = [];
+  let index = 0;
+  let scale = 1;
+  let lastTap = 0;
+
+  function collectImages(){
+    const track = grid.classList.contains('gallery-slider') ? grid : grid.querySelector('.gallery-track') || grid;
+    images = Array.from(track.querySelectorAll('img'));
+  }
+
+  function openAt(i){
+    collectImages();
+    if (!images.length) return;
+    index = Math.max(0, Math.min(i, images.length-1));
+    stageImg.src = images[index].src;
+    stageImg.alt = images[index].alt || 'Gallery image';
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    scale = 1;
+    stageImg.style.transform = 'scale(1)';
+
+    // Build dots
+    if (dotsWrap){
+      dotsWrap.innerHTML = '';
+      images.forEach((_, di)=>{
+        const b = document.createElement('button');
+        b.setAttribute('aria-label', `Image ${di+1}`);
+        if (di===index) b.setAttribute('aria-selected','true');
+        b.addEventListener('click', ()=>{ goTo(di); });
+        dotsWrap.appendChild(b);
+      });
+    }
+  }
+
+  function close(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+
+  function goTo(i){
+    index = (i + images.length) % images.length;
+    stageImg.src = images[index].src;
+    stageImg.alt = images[index].alt || 'Gallery image';
+    scale = 1;
+    stageImg.style.transform = 'scale(1)';
+    if (dotsWrap){
+      const dots = Array.from(dotsWrap.children);
+      dots.forEach((d,di)=> d.setAttribute('aria-selected', String(di===index)));
+    }
+  }
+
+  function next(){ goTo(index+1); }
+  function prev(){ goTo(index-1); }
+
+  // Open on image click/tap
+  grid.addEventListener('click', (e)=>{
+    const t = e.target;
+    if (t && t.tagName === 'IMG'){
+      const all = Array.from(grid.querySelectorAll('img'));
+      const i = all.indexOf(t);
+      openAt(Math.max(0,i));
+    }
+  });
+
+  // Controls
+  btnClose && btnClose.addEventListener('click', close);
+  btnNext && btnNext.addEventListener('click', next);
+  btnPrev && btnPrev.addEventListener('click', prev);
+  lightbox.addEventListener('click', (e)=>{
+    if (e.target === lightbox) close();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', (e)=>{
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  // Zoom: wheel and double-tap
+  lightbox.addEventListener('wheel', (e)=>{
+    if (!lightbox.classList.contains('open')) return;
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
+    scale = Math.min(4, Math.max(1, scale - delta*0.1));
+    stageImg.style.transform = `scale(${scale.toFixed(2)})`;
+  }, { passive:false });
+
+  lightbox.addEventListener('touchend', (e)=>{
+    const now = Date.now();
+    if (now - lastTap < 300){
+      // double tap to toggle zoom
+      scale = scale > 1 ? 1 : 2;
+      stageImg.style.transform = `scale(${scale})`;
+    }
+    lastTap = now;
+  });
+
+  // Swipe next/prev
+  let startX = 0;
+  lightbox.addEventListener('touchstart', (e)=>{ startX = e.touches[0].clientX; }, {passive:true});
+  lightbox.addEventListener('touchend', (e)=>{
+    const dx = (e.changedTouches[0]?.clientX||0) - startX;
+    if (Math.abs(dx) > 36){ dx < 0 ? next() : prev(); }
+  });
+})();
 
