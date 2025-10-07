@@ -531,9 +531,16 @@ if (toTop){
   function initChat() {
     if (!chatButton || !chatPopup) return;
 
-    // Clear previous message history for fresh conversation
+    // Force fresh conversation on every refresh (per tab)
     messageHistory = [];
-    localStorage.removeItem('bismi_chat_history');
+    try {
+      sessionStorage.removeItem('bismi_chat_history');
+      // Always create a fresh session id per load
+      sessionStorage.setItem(
+        'bismi_chat_session',
+        'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+      );
+    } catch (e) {}
     
     // Load fresh message history (will be empty)
     loadMessageHistory();
@@ -608,8 +615,11 @@ if (toTop){
     // Show typing indicator
     showTypingIndicator();
 
-    // Send to API (replace with your actual API endpoint)
-    sendToAPI(message);
+    // Humanize: wait 3 seconds before bot starts replying
+    setTimeout(() => {
+      // Send to API (or fallback) after delay
+      sendToAPI(message);
+    }, 3000);
   }
 
   // API Integration function
@@ -719,12 +729,13 @@ if (toTop){
     }
   }
 
-  // Generate a simple session ID for tracking conversations
+  // Generate a simple session ID for tracking conversations (per tab/session)
   function getSessionId() {
-    // Generate a new session ID for each page load/refresh
-    // This ensures each user gets a fresh conversation
-    const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('bismi_chat_session', sessionId);
+    let sessionId = sessionStorage.getItem('bismi_chat_session');
+    if (!sessionId) {
+      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem('bismi_chat_session', sessionId);
+    }
     return sessionId;
   }
 
@@ -764,7 +775,7 @@ if (toTop){
     typingDiv.innerHTML = `
       <div class="message-content">
         <div class="typing-indicator">
-          <span>AI is typing</span>
+          <span>Typing…</span>
           <div class="typing-dots">
             <span></span>
             <span></span>
@@ -833,6 +844,24 @@ if (toTop){
       return "Hi ma! Na nalla iruken! Neenga epdi irukinga ma? Welcome to BISMI! 😊 I'm so happy you came to chat with me! Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
     }
     
+    // Islamic greetings and respectful replies
+    if (message.includes('assalamu') || message.includes('as-salamu') || message.includes('salaam') || message.includes('salam') || message.includes('wa alaikum') || message.includes('walaikum')) {
+      return "Wa alaikum assalam ma!  Eppadi irukinga ma?  – Aari work details venuma, illati henna cones details venuma ma ?";
+    }
+
+    if (message.includes('allah') || message.includes('alhamdulillah') || message.includes('masha allah') || message.includes('mashaallah')) {
+      return "Masha Allah ma! Romba nandri. Ungaloda appreciation na romba sandhosham! Enna design pathi yosikringala ma? Blouse design ah, saree border ah, illati bridal set ah?";
+    }
+
+    // Delivery and payment related
+    if (message.includes('delivery') || message.includes('deliver') || message.includes('parcel') || message.includes('send') || message.includes('ship') || message.includes('abroad') || message.includes('international')) {
+      return "Delivery pathi sollaren ma! Henna cones Tamil Nadu full ah deliver panrom, abroad kooda arrange pannalam. Aari pieces ku careful packing and courier tracking kudukrom. Neenga enga irukinga ma? Naan exact delivery time sollaren.";
+    }
+
+    if (message.includes('payment') || message.includes('upi') || message.includes('gpay') || message.includes('phonepe') || message.includes('paytm') || message.includes('advance')) {
+      return "Payment romba easy ma! GPay / PhonePe / UPI ellam accept panrom. Aari custom orders ku konjam advance irukkum, balance delivery ku munadi settle pannalam. Neenga eppadi prefer panreenga ma?";
+    }
+
     if (message.includes('thank') || message.includes('thanks') || message.includes('nandri')) {
       return "You're so welcome ma! 😊 I'm so happy I could help! Feel free to ask anything about our work. I'm always here to help ma!";
     }
@@ -857,7 +886,7 @@ if (toTop){
 
   function saveMessageHistory() {
     try {
-      localStorage.setItem('bismi_chat_history', JSON.stringify(messageHistory.slice(-50))); // Keep last 50 messages
+      sessionStorage.setItem('bismi_chat_history', JSON.stringify(messageHistory.slice(-50))); // Keep last 50 messages (per tab)
     } catch (e) {
       console.log('Could not save chat history');
     }
@@ -865,7 +894,7 @@ if (toTop){
 
   function loadMessageHistory() {
     try {
-      const saved = localStorage.getItem('bismi_chat_history');
+      const saved = sessionStorage.getItem('bismi_chat_history');
       if (saved) {
         messageHistory = JSON.parse(saved);
         // Don't reload the initial bot message, just add any saved messages
@@ -890,9 +919,10 @@ if (toTop){
     const time = new Date(timestamp);
     const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
+    const rendered = sender === 'bot' ? content : escapeHtml(content);
     messageDiv.innerHTML = `
       <div class="message-content">
-        <p>${escapeHtml(content)}</p>
+        <p>${rendered}</p>
       </div>
       <div class="message-time">${timeString}</div>
     `;
