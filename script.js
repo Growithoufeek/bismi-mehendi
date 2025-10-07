@@ -820,7 +820,7 @@ if (toTop){
     const message = userMessage.toLowerCase();
     
     // Smart, natural responses in Tanglish - no mention of technical issues
-    if (message.includes('epdi') || message.includes('eppadi') || message.includes('irukinga')) {
+    if (message.includes('nalam') || message.includes('health') || message.includes('irukinga')) {
       return "Hi ma, na nalla iruken! Neenga epdi irukinga ma? Welcome to BISMI! 😊 Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
     }
     
@@ -872,7 +872,7 @@ if (toTop){
     }
     
     if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-      return "Hi ma!  Neenga epdi irukinga ma? Welcome to BISMI! 😊 I'm so happy you came to chat with me! Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
+      return "Hi ma!  Neenga epdi irukinga? Welcome to BISMI! 😊 I'm so happy you came to chat with me! Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
     }
     
     // Islamic greetings and respectful replies
