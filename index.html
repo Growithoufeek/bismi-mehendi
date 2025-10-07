@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RDD0SWDD56"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RDD0SWDD56');
+</script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BISMI Aari & Mehendi Center — Thanjavur</title>
-    <meta name="description" content="Authentic handmade henna cones and bespoke Aari embroidery from Thanjavur. Bridal, festivals, custom designs, and more." />
+    <meta name="description" content="Pandaravadai,Thanjavur • Since 2023
+                  Exclusive Handcrafted Aari Embroidery ✨" />
     <meta name="theme-color" content="#0f1a1a" />
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon.png" />
@@ -14,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css" />
+    <script src="./config.js"></script>
   </head>
   <body>
     <div class="bg-canvas" aria-hidden="true"></div>
@@ -128,6 +139,12 @@
               <a class="btn btn-primary" href="https://wa.me/919677179922" target="_blank" rel="noopener noreferrer">Order on WhatsApp</a>
               <a class="btn btn-ghost" href="https://instagram.com/bismi_aari_mehendi_center/" target="_blank" rel="noopener noreferrer">View Updates on Instagram</a>
             </div>
+            <!-- Mobile-only compact chips -->
+            <div class="shop-compact" aria-label="Packs">
+              <span class="shop-chip">Single Cone</span>
+              <span class="shop-chip shop-chip--accent">Set of 6</span>
+              <span class="shop-chip">Bulk Orders</span>
+            </div>
           </div>
           <div class="shop-pack">
             <div class="pack"><h3>Single Cone</h3><p>Perfect for practice and simple designs.</p></div>
@@ -152,7 +169,7 @@
             <img loading="lazy" src="assets/images/gallery8.jpg" alt="Thread and bead work" />
             <img loading="lazy" src="assets/images/gallery9.jpg" alt="Thread and bead work" />
             <img loading="lazy" src="assets/images/gallery10.jpg" alt="Thread and bead work" />
-            <img loading="lazy" src="assets/images/gallery11.jpj.png" alt="Thread and bead work" />
+            <img loading="lazy" src="assets/images/gallery11.png" alt="Thread and bead work" />
           </div>
           <div class="gallery-dots" id="gallery-dots" aria-label="Gallery slides" role="tablist"></div>
           <div class="insta-callout">
@@ -216,6 +233,55 @@
     </footer>
 
     <a href="#top" class="to-top" aria-label="Back to top">↑</a>
+
+    <!-- Floating Chat Button -->
+    <button class="chat-button" id="chat-button" aria-label="Open chat">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+        <path d="M7 9H17V11H7V9ZM7 12H15V14H7V12Z" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <!-- Chat Popup -->
+    <div class="chat-popup" id="chat-popup" aria-hidden="true">
+      <div class="chat-header">
+        <div class="chat-title">
+          <h3>Hi ma! I'm Faris</h3>
+          <p>Your friendly assistant for Aari & Mehendi needs</p>
+        </div>
+        <button class="chat-close" id="chat-close" aria-label="Close chat">×</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="message bot-message">
+          <div class="message-content">
+            <p>Hi ma! Na nalla iruken! Neenga epdi irukinga ma? Welcome to BISMI Aari & Mehendi Center! 😊 I'm Faris, and I'm so happy you came to chat with me! I'm here to help you with our beautiful Aari embroidery and fresh henna cones. Enna panreenga ma? Are you looking for some beautiful work or maybe our natural henna cones?</p>
+          </div>
+          <div class="message-time">Just now</div>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <div class="chat-input-wrapper">
+          <input type="text" id="chat-input" placeholder="Type your message..." maxlength="500">
+          <button class="chat-send" id="chat-send" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="chat-status" id="chat-status"></div>
+      </div>
+    </div>
+
+    <!-- Lightbox Modal for Gallery -->
+    <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Image viewer">
+      <button class="lightbox-close" aria-label="Close">✕</button>
+      <button class="lightbox-prev" aria-label="Previous image">‹</button>
+      <button class="lightbox-next" aria-label="Next image">›</button>
+      <div class="lightbox-stage">
+        <img id="lightbox-image" alt="Gallery image" />
+      </div>
+      <div class="lightbox-dots" id="lightbox-dots" role="tablist" aria-label="Gallery navigation"></div>
+    </div>
 
     <script src="./script.js" defer></script>
   </body>
