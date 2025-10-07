@@ -552,10 +552,15 @@ if (toTop){
     chatInput.addEventListener('keypress', handleKeyPress);
 
     // Detect virtual keyboard open/close to adjust popup height on mobile
-    window.addEventListener('resize', () => {
-      const kbLikelyOpen = window.innerHeight < screen.height * 0.75;
+    const adjustForKeyboard = () => {
+      const kbLikelyOpen = window.visualViewport ? (window.visualViewport.height < window.innerHeight * 0.9) : (window.innerHeight < screen.height * 0.75);
       chatPopup.classList.toggle('kb-open', kbLikelyOpen);
-    });
+    };
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', adjustForKeyboard);
+    } else {
+      window.addEventListener('resize', adjustForKeyboard);
+    }
     
     // Close chat when clicking outside
     document.addEventListener('click', (e) => {
@@ -852,7 +857,7 @@ if (toTop){
     }
     
     if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-      return "Hi ma! Na nalla iruken! Neenga epdi irukinga ma? Welcome to BISMI! 😊 I'm so happy you came to chat with me! Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
+      return "Hi ma!  Neenga epdi irukinga ma? Welcome to BISMI! 😊 I'm so happy you came to chat with me! Enna panreenga ma? Are you looking for some beautiful Aari work or maybe our fresh henna cones?";
     }
     
     // Islamic greetings and respectful replies
