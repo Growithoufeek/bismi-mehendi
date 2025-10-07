@@ -844,11 +844,11 @@ if (toTop){
       return "Of course ma! I'm so excited you want to order! Just click here to WhatsApp us and we'll discuss everything in detail. Only few orders per month take panrom quality maintain pannalam ma. Enna order pannalam ma? <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20place%20an%20order%20for%20BISMI%20Aari%20%26%20Mehendi%20Center.%20Please%20help%20me%20with%20details.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>📱 WhatsApp Order</a>";
     }
     
-    if (message.includes('time') || message.includes('duration') || message.includes('how long') || message.includes('neram')) {
+    if (message.includes('time') || message.includes('duration') || message.includes('how long') || message.includes('neram') || message.includes('evlo')) {
       return "Good question ma! Aari work 2-4 weeks time pannum depending on complexity. But henna cones immediately send pannalam - every week fresh batches seiyrom ma! Eppadi venum ma?";
     }
     
-    if (message.includes('location') || message.includes('address') || message.includes('where') || message.includes('enga')) {
+    if (message.includes('location') || message.includes('address') || message.includes('where') || message.includes('enga') || message.includes('area')) {
       return "We're in Pandaravadai, Thanjavur ma! Henna cones Tamil Nadu full ah deliver panrom. Aari work pickup or delivery discuss pannalam ma. Neenga nearby ah irukinga ma?";
     }
     
@@ -891,7 +891,7 @@ if (toTop){
     }
     
     // Default engaging response with WhatsApp link
-    return "That's a really good question ma! I want to make sure I give you the right answer. Can you tell me more about what you're looking for? For detailed info, you can also <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20have%20a%20question%20about%20BISMI%20Aari%20%26%20Mehendi%20Center.%20Please%20help%20me.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>💬 WhatsApp us</a> ma!";
+    return "Oh ok  ma! I want to make sure I give you the right answer. Can you tell me more about what you're looking for? illena For detailed info, you can also <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20have%20a%20question%20about%20BISMI%20Aari%20%26%20Mehendi%20Center.%20Please%20help%20me.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>💬 WhatsApp me </a> ma!";
   }
 
   function escapeHtml(text) {
