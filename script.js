@@ -829,16 +829,31 @@ if (toTop){
     }
     
     if (message.includes('price') || message.includes('cost') || message.includes('rate') || message.includes('velai')) {
-      return "Sure ma! Let me tell you our rates - henna cones ₹35 per cone, super affordable right? Aari work ₹250 per hour. Small jobs start ₹2,000, big works up to ₹10,000 depending on complexity ma. Enna work venum ma? I can help you calculate!";
+      return "Sure ma! Let me tell you our rates - henna cones ₹25 per cone, super affordable right? Aari work ₹250 per hour. Small jobs start ₹2,000, big works up to ₹10,000 depending on complexity ma. Enna work venum ma? I can help you calculate!";
     }
     
     if (message.includes('henna') || message.includes('cone') || message.includes('mehendi')) {
-      return "Oh ma, our henna cones romba fresh and natural! ₹35 per cone only. Every week fresh ah seiyrom ma! Perfect for weddings, festivals, or just for fun. Tamil Nadu full ah deliver panrom, abroad kum pannalam ma. Enna cones venum ma? <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20order%20henna%20cones%20from%20BISMI.%20Please%20tell%20me%20about%20pricing%20and%20delivery.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>🌿 Order Henna Cones</a>";
+      return "Oh ma, our henna cones romba fresh and natural! ₹25 per cone only. Every week fresh ah seiyrom ma! Perfect for weddings, festivals, or just for fun. Tamil Nadu full ah deliver panrom, abroad kum pannalam ma. Enna cones venum ma? <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20order%20henna%20cones%20from%20BISMI.%20Please%20tell%20me%20about%20pricing%20and%20delivery.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>🌿 Order Henna Cones</a>";
     }
     
     if (message.includes('aari') || message.includes('embroidery') || message.includes('blouse') || message.includes('saree') || message.includes('pattu')) {
       return "Aari work is our specialty ma! Each piece romba love and care oda seiyrom. ₹250 per hour, small jobs ₹2,000 la start, big works ₹10,000 varai. Only few orders per month take panrom quality maintain pannalam ma. Enna design venum ma? <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20discuss%20Aari%20embroidery%20work%20with%20BISMI.%20Please%20help%20me%20with%20design%20and%20pricing.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>✨ Discuss Aari Work</a>";
     }
+
+    if (message.includes('design') || message.includes('sample') || message.includes('example') || message.includes('pattern')) {
+      return "Oh ma! Ungaluku design examples paarthaa venuma? Ellam namma website la gallery section la irukku ma! You can check and get inspiration for henna or Aari work. Enaku sollunga, neenga specific design paaka interest irukkaa? 🌸 WhatsApp la contact pannunga: <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20enquire%20about%20bridal%20Aari%20or%20henna%20cones%20from%20BISMI.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>💬 WhatsApp Design Inquiry</a>";
+    }
+
+    if (message.includes('bridal') || message.includes('bride') || message.includes('wedding') || message.includes('marriage') || message.includes('brides')) {
+      return "Oh ma! Ungaluku bridal work venuma? Aama, brides ku namma full service provide panrom – Aari work, henna cones, bridal sets ellam! Hourly works kooda seiyrom ma. Neenga enna venum? Details paaka, WhatsApp la contact pannunga: <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20enquire%20about%20bridal%20Aari%20or%20henna%20cones%20from%20BISMI.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>💬 WhatsApp Bridal Inquiry</a>";
+    }
+
+    if (message.includes('organic') || message.includes('natural') || message.includes('stain') || message.includes('chemical') || message.includes('pure')) {
+      return "Oh ma! Ungaluku henna cone pathi concern irukkaa? Namma cones romba fresh, natural and chemical-free ma! Perfect deep stain kudukkum, safe for skin. Every week fresh batches ready pannrom. Enaku sollunga, neenga few cones order pannalaam ma? 🌿 <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20order%20fresh%20organic%20henna%20cones%20from%20BISMI.%20Please%20help%20me%20with%20pricing%20and%20delivery.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>🌿 Order Organic Henna</a>";
+    }
+  
+  
+  
     
     if (message.includes('order') || message.includes('book') || message.includes('venum') || message.includes('available')) {
       return "Of course ma! I'm so excited you want to order! Just click here to WhatsApp us and we'll discuss everything in detail. Only few orders per month take panrom quality maintain pannalam ma. Enna order pannalam ma? <a href='https://wa.me/919677179922?text=Hi%20ma!%20I%20want%20to%20place%20an%20order%20for%20BISMI%20Aari%20%26%20Mehendi%20Center.%20Please%20help%20me%20with%20details.' target='_blank' style='color: #25D366; text-decoration: none; font-weight: bold;'>📱 WhatsApp Order</a>";
