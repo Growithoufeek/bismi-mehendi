@@ -624,13 +624,9 @@ body{
 @media (max-width: 480px) {
   .chat-popup {
     position: fixed;
-    width: calc(100vw - 32px);
-    height: calc(100vh - 100px);
-    bottom: 20px;
-    right: 16px;
-    left: 16px;
+    inset: auto 16px 16px 16px; /* left/right/bottom margins */
+    height: min(540px, calc(100svh - 32px)); /* use small viewport unit to avoid zoom issues */
     top: auto;
-    max-height: calc(100vh - 100px);
     border-radius: 16px;
   }
   
@@ -643,9 +639,18 @@ body{
     z-index: 1001;
   }
   
-  .chat-messages {
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
+  .chat-messages { min-height: 0; }
+
+  /* Prevent iOS zoom on focus by ensuring >=16px font-size */
+  .chat-input { font-size: 16px; }
+
+  /* Add safe-area padding so send button stays above home bar */
+  .chat-input-container { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+
+  /* When keyboard is open, allow the popup to use almost full height */
+  .chat-popup.kb-open {
+    height: calc(100svh - 16px);
+    bottom: 8px;
   }
 }
 

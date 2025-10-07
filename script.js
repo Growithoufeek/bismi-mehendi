@@ -550,6 +550,12 @@ if (toTop){
     chatClose.addEventListener('click', closeChat);
     chatSend.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', handleKeyPress);
+
+    // Detect virtual keyboard open/close to adjust popup height on mobile
+    window.addEventListener('resize', () => {
+      const kbLikelyOpen = window.innerHeight < screen.height * 0.75;
+      chatPopup.classList.toggle('kb-open', kbLikelyOpen);
+    });
     
     // Close chat when clicking outside
     document.addEventListener('click', (e) => {
@@ -580,6 +586,11 @@ if (toTop){
     chatPopup.setAttribute('aria-hidden', 'false');
     chatButton.setAttribute('aria-expanded', 'true');
     chatInput.focus();
+    // Adjust once opened
+    setTimeout(() => {
+      const kbLikelyOpen = window.innerHeight < screen.height * 0.75;
+      chatPopup.classList.toggle('kb-open', kbLikelyOpen);
+    }, 50);
     
     // Add a subtle animation to the button
     chatButton.style.animation = 'none';
