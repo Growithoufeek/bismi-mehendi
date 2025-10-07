@@ -601,21 +601,50 @@ body{
   }
 }
 
-/* Mobile responsiveness for chat */
-@media (max-width: 480px) {
+/* Tablet responsiveness for chat */
+@media (max-width: 768px) and (min-width: 481px) {
   .chat-popup {
     width: calc(100vw - 40px);
+    max-width: 400px;
     height: calc(100vh - 120px);
-    bottom: 80px;
+    max-height: 500px;
+    bottom: 20px;
     right: 20px;
-    left: 20px;
+    left: auto;
   }
   
   .chat-button {
-    bottom: 16px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* Mobile responsiveness for chat */
+@media (max-width: 480px) {
+  .chat-popup {
+    position: fixed;
+    width: calc(100vw - 32px);
+    height: calc(100vh - 100px);
+    bottom: 20px;
     right: 16px;
+    left: 16px;
+    top: auto;
+    max-height: calc(100vh - 100px);
+    border-radius: 16px;
+  }
+  
+  .chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
     width: 52px;
     height: 52px;
+    z-index: 1001;
+  }
+  
+  .chat-messages {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
   }
 }
 

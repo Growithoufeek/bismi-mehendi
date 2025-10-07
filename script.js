@@ -531,7 +531,11 @@ if (toTop){
   function initChat() {
     if (!chatButton || !chatPopup) return;
 
-    // Load message history from localStorage
+    // Clear previous message history for fresh conversation
+    messageHistory = [];
+    localStorage.removeItem('bismi_chat_history');
+    
+    // Load fresh message history (will be empty)
     loadMessageHistory();
 
     // Event listeners
@@ -717,11 +721,10 @@ if (toTop){
 
   // Generate a simple session ID for tracking conversations
   function getSessionId() {
-    let sessionId = localStorage.getItem('bismi_chat_session');
-    if (!sessionId) {
-      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('bismi_chat_session', sessionId);
-    }
+    // Generate a new session ID for each page load/refresh
+    // This ensures each user gets a fresh conversation
+    const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('bismi_chat_session', sessionId);
     return sessionId;
   }
 
