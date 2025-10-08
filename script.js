@@ -89,7 +89,7 @@ document.querySelectorAll('.section .container > *').forEach(el => {
   // Initial
   applyRotation();
 })();
-inner.style.transform = `translateZ(-${radius}px) rotateY(${angle}deg)`;
+
 
 
 // Contact form removed; direct WhatsApp/Instagram links are used in markup.
