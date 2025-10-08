@@ -50,13 +50,13 @@ document.querySelectorAll('.section .container > *').forEach(el => {
   if (!inner) return;
   const dots = Array.from(document.querySelectorAll('.t-dot'));
   let index = 0;
-  const total = 3; // faces
+  const total = 4; // faces
 
   function applyRotation(){
     const cube = inner.parentElement;
     const styles = cube ? getComputedStyle(cube) : null;
     const radius = styles ? parseFloat(styles.getPropertyValue('--radius')) || 400 : 400;
-    const angle = index * -120; // 3 faces around Y axis
+    const angle = index * -90; // 4 faces around Y axis
     inner.style.transform = `translateZ(-${radius}px) rotateY(${angle}deg)`;
     dots.forEach((d,i)=> d.setAttribute('aria-selected', String(i===index)));
   }
@@ -89,6 +89,8 @@ document.querySelectorAll('.section .container > *').forEach(el => {
   // Initial
   applyRotation();
 })();
+inner.style.transform = `translateZ(-${radius}px) rotateY(${angle}deg)`;
+
 
 // Contact form removed; direct WhatsApp/Instagram links are used in markup.
 
