@@ -1,3 +1,81 @@
+// Eid festive offer — fullscreen popup with countdown to Tue 26 May 2026
+(function(){
+  const modal = document.getElementById('offer-modal');
+  const closeBtn = document.getElementById('offer-close');
+  if (!modal || !closeBtn) return;
+
+  const OFFER_END = new Date(2026, 4, 26, 23, 59, 59); // May 26, 2026 (Tuesday), local time
+  const DISMISS_KEY = 'bismi_eid_offer_dismissed';
+
+  const daysEl = document.getElementById('offer-days');
+  const hoursEl = document.getElementById('offer-hours');
+  const minsEl = document.getElementById('offer-mins');
+  const secsEl = document.getElementById('offer-secs');
+
+  let timerId = null;
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function updateCountdown(){
+    const diff = OFFER_END.getTime() - Date.now();
+    if (diff <= 0){
+      if (daysEl) daysEl.textContent = '00';
+      if (hoursEl) hoursEl.textContent = '00';
+      if (minsEl) minsEl.textContent = '00';
+      if (secsEl) secsEl.textContent = '00';
+      closeOffer();
+      return false;
+    }
+    const totalSec = Math.floor(diff / 1000);
+    const days = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    if (daysEl) daysEl.textContent = pad(days);
+    if (hoursEl) hoursEl.textContent = pad(hours);
+    if (minsEl) minsEl.textContent = pad(mins);
+    if (secsEl) secsEl.textContent = pad(secs);
+    return true;
+  }
+
+  function openOffer(){
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('offer-modal-open');
+    updateCountdown();
+    if (!timerId){
+      timerId = setInterval(()=>{
+        if (!updateCountdown() && timerId){
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }, 1000);
+    }
+  }
+
+  function closeOffer(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('offer-modal-open');
+    try { sessionStorage.setItem(DISMISS_KEY, '1'); } catch (e) {}
+    if (timerId){
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  closeBtn.addEventListener('click', closeOffer);
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeOffer();
+  });
+
+  if (Date.now() > OFFER_END.getTime()) return;
+
+  let dismissed = false;
+  try { dismissed = sessionStorage.getItem(DISMISS_KEY) === '1'; } catch (e) {}
+  if (!dismissed) openOffer();
+})();
+
 // Mobile nav toggle
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('#nav-menu');

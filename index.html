@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css?v=2025-10-07-2" />
+    <link rel="stylesheet" href="./styles.css?v=2026-05-23-1" />
     <script src="./config.js?v=2025-10-07-2"></script>
   </head>
   <body>
@@ -238,6 +238,34 @@
     </footer>
 
 
+    <!-- Eid Festive Offer (fullscreen on visit) -->
+    <div class="offer-modal" id="offer-modal" role="dialog" aria-modal="true" aria-labelledby="offer-title" aria-hidden="true">
+      <button type="button" class="offer-close" id="offer-close" aria-label="Close offer">×</button>
+      <div class="offer-modal-inner">
+        <p class="offer-eyebrow">Eid Seasonal Sale</p>
+        <h2 class="offer-title" id="offer-title">Festive Offer — Limited Time</h2>
+        <div class="offer-image-wrap">
+          <img src="assets/images/ad.jpg" alt="BISMI Eid festive sale — current offer" />
+        </div>
+        <div class="offer-timer-block">
+          <p class="offer-timer-label">Offer ends in</p>
+          <div class="offer-countdown" id="offer-countdown" aria-live="polite">
+            <div class="offer-unit"><span id="offer-days">00</span><small>Days</small></div>
+            <div class="offer-unit"><span id="offer-hours">00</span><small>Hrs</small></div>
+            <div class="offer-unit"><span id="offer-mins">00</span><small>Mins</small></div>
+            <div class="offer-unit"><span id="offer-secs">00</span><small>Secs</small></div>
+          </div>
+          <p class="offer-deadline">Ends Tuesday, 26 May 2026</p>
+        </div>
+        <a
+          class="btn btn-primary offer-order-btn"
+          href="https://wa.me/919677179922?text=Hi%20ma!%20I%20saw%20the%20Eid%20festive%20offer%20on%20BISMI%20website.%20I%20want%20to%20place%20an%20order.%20Please%20share%20details."
+          target="_blank"
+          rel="noopener noreferrer"
+        >Order Now</a>
+      </div>
+    </div>
+
     <!-- Floating Chat Button -->
     <button class="chat-button" id="chat-button" aria-label="Open chat">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -280,7 +308,7 @@
       <div class="lightbox-dots" id="lightbox-dots" role="tablist" aria-label="Gallery navigation"></div>
     </div>
 
-    <script src="./script.js?v=2025-10-07-2" defer></script>
+    <script src="./script.js?v=2026-05-23-1" defer></script>
   </body>
   </html>
 
