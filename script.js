@@ -11,8 +11,211 @@
   const hoursEl = document.getElementById('offer-hours');
   const minsEl = document.getElementById('offer-mins');
   const secsEl = document.getElementById('offer-secs');
+  const logoVideo = document.getElementById('offer-logo-video');
+  const offerMusic = document.getElementById('offer-music');
+  const soundToggle = document.getElementById('offer-sound-toggle');
+  const audioUnlock = document.getElementById('offer-audio-unlock');
+  const MUSIC_VOLUME = 0.55;
+  const AUDIO_UNLOCK_KEY = 'bismi_audio_unlocked';
+
+  const ua = navigator.userAgent || '';
+  const IS_IN_APP_BROWSER = /Instagram|FBAN|FBAV|FB_IAB|Twitter|Line\/|MicroMessenger|Snapchat|TikTok|LinkedInApp/i.test(ua);
+  const IS_IOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const IS_MOBILE = IS_IOS || /Android/i.test(ua);
 
   let timerId = null;
+  let musicRetryTimers = [];
+  let autoplayCheckTimer = null;
+
+  function hasAudioUnlock(){
+    try { return sessionStorage.getItem(AUDIO_UNLOCK_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  function setAudioUnlock(){
+    try { sessionStorage.setItem(AUDIO_UNLOCK_KEY, '1'); } catch (e) {}
+  }
+
+  function needsTapForAudio(){
+    return IS_IN_APP_BROWSER || IS_MOBILE;
+  }
+
+  function updateSoundToggle(playing){
+    if (!soundToggle) return;
+    soundToggle.setAttribute('aria-pressed', String(playing));
+    soundToggle.setAttribute('aria-label', playing ? 'Mute music' : 'Unmute music');
+    soundToggle.classList.toggle('is-waiting-audio', !playing);
+  }
+
+  function isMusicAudible(){
+    return offerMusic && !offerMusic.paused && !offerMusic.ended && !offerMusic.muted;
+  }
+
+  function showAudioUnlock(){
+    if (!audioUnlock) return;
+    audioUnlock.hidden = false;
+    audioUnlock.classList.add('is-visible');
+  }
+
+  function hideAudioUnlock(){
+    if (!audioUnlock) return;
+    audioUnlock.classList.remove('is-visible');
+    audioUnlock.hidden = true;
+  }
+
+  /** Direct play inside a tap/click handler — works on Safari & Instagram */
+  function playMusicWithGesture(){
+    if (!offerMusic || !modal.classList.contains('open')) return false;
+    offerMusic.muted = false;
+    offerMusic.volume = MUSIC_VOLUME;
+    const playAttempt = offerMusic.play();
+    if (playAttempt && typeof playAttempt.catch === 'function'){
+      playAttempt.catch(()=>{});
+    }
+    const playing = !offerMusic.paused;
+    updateSoundToggle(playing);
+    return playing;
+  }
+
+  function unlockOfferAudio(){
+    setAudioUnlock();
+    hideAudioUnlock();
+    playMusicWithGesture();
+    clearMusicRetries();
+  }
+
+  function playOfferMusicAutoplay(){
+    if (!offerMusic || !modal.classList.contains('open')) return Promise.resolve(false);
+    if (isMusicAudible()){
+      updateSoundToggle(true);
+      hideAudioUnlock();
+      return Promise.resolve(true);
+    }
+
+    offerMusic.volume = MUSIC_VOLUME;
+    const attempt = (startMuted) => {
+      offerMusic.muted = !!startMuted;
+      return offerMusic.play().then(() => {
+        if (startMuted){
+          offerMusic.muted = false;
+          offerMusic.volume = MUSIC_VOLUME;
+        }
+        updateSoundToggle(true);
+        hideAudioUnlock();
+        return true;
+      });
+    };
+
+    return attempt(true)
+      .catch(() => attempt(false))
+      .catch(() => {
+        updateSoundToggle(false);
+        return false;
+      });
+  }
+
+  function clearMusicRetries(){
+    musicRetryTimers.forEach((id) => clearTimeout(id));
+    musicRetryTimers = [];
+    if (autoplayCheckTimer){
+      clearTimeout(autoplayCheckTimer);
+      autoplayCheckTimer = null;
+    }
+  }
+
+  function scheduleMusicAutoplay(){
+    clearMusicRetries();
+    if (!modal.classList.contains('open')) return;
+
+    if (needsTapForAudio() && !hasAudioUnlock()){
+      showAudioUnlock();
+      return;
+    }
+
+    playOfferMusicAutoplay();
+    [80, 200, 500, 1000, 1800].forEach((ms) => {
+      musicRetryTimers.push(setTimeout(() => {
+        if (!modal.classList.contains('open')) return;
+        if (isMusicAudible()){
+          hideAudioUnlock();
+          return;
+        }
+        playOfferMusicAutoplay();
+      }, ms));
+    });
+
+    autoplayCheckTimer = setTimeout(() => {
+      if (!modal.classList.contains('open')) return;
+      if (isMusicAudible()) hideAudioUnlock();
+      else showAudioUnlock();
+    }, 1100);
+  }
+
+  function stopOfferMusic(){
+    if (!offerMusic) return;
+    clearMusicRetries();
+    offerMusic.pause();
+    offerMusic.currentTime = 0;
+    offerMusic.muted = false;
+    updateSoundToggle(false);
+    hideAudioUnlock();
+  }
+
+  function muteOfferMusic(){
+    if (!offerMusic) return;
+    offerMusic.pause();
+    updateSoundToggle(false);
+  }
+
+  function toggleOfferMusic(){
+    if (!offerMusic) return;
+    if (isMusicAudible()) muteOfferMusic();
+    else {
+      setAudioUnlock();
+      playMusicWithGesture();
+    }
+  }
+
+  if (audioUnlock){
+    audioUnlock.addEventListener('click', (e)=>{
+      e.preventDefault();
+      unlockOfferAudio();
+    });
+  }
+
+  if (soundToggle){
+    soundToggle.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      toggleOfferMusic();
+    });
+  }
+
+  if (offerMusic){
+    offerMusic.addEventListener('error', ()=>{
+      if (soundToggle) soundToggle.hidden = true;
+      hideAudioUnlock();
+    });
+    const retryWhenReady = () => {
+      if (!modal.classList.contains('open') || needsTapForAudio()) return;
+      if (!isMusicAudible()) playOfferMusicAutoplay();
+    };
+    offerMusic.addEventListener('canplay', retryWhenReady);
+    offerMusic.addEventListener('canplaythrough', retryWhenReady);
+    offerMusic.load();
+  }
+
+  function playOfferVideo(){
+    if (!logoVideo) return;
+    logoVideo.muted = true;
+    const playAttempt = logoVideo.play();
+    if (playAttempt && typeof playAttempt.catch === 'function'){
+      playAttempt.catch(()=>{});
+    }
+  }
+
+  function pauseOfferVideo(){
+    if (!logoVideo) return;
+    logoVideo.pause();
+  }
 
   function pad(n){ return String(n).padStart(2, '0'); }
 
@@ -42,6 +245,9 @@
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('offer-modal-open');
+    if (soundToggle) soundToggle.hidden = false;
+    playOfferVideo();
+    scheduleMusicAutoplay();
     updateCountdown();
     if (!timerId){
       timerId = setInterval(()=>{
@@ -57,6 +263,13 @@
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('offer-modal-open');
+    pauseOfferVideo();
+    stopOfferMusic();
+    hideAudioUnlock();
+    if (soundToggle){
+      soundToggle.hidden = true;
+      soundToggle.classList.remove('is-waiting-audio');
+    }
     try { sessionStorage.setItem(DISMISS_KEY, '1'); } catch (e) {}
     if (timerId){
       clearInterval(timerId);
@@ -69,11 +282,31 @@
     if (e.key === 'Escape' && modal.classList.contains('open')) closeOffer();
   });
 
+  function primeOfferAudio(){
+    if (!offerMusic || needsTapForAudio()) return Promise.resolve();
+    offerMusic.muted = true;
+    return offerMusic.play()
+      .then(()=>{
+        offerMusic.pause();
+        offerMusic.currentTime = 0;
+        offerMusic.muted = false;
+      })
+      .catch(()=>{
+        offerMusic.muted = false;
+      });
+  }
+
   if (Date.now() > OFFER_END.getTime()) return;
 
   let dismissed = false;
   try { dismissed = sessionStorage.getItem(DISMISS_KEY) === '1'; } catch (e) {}
-  if (!dismissed) openOffer();
+  if (!dismissed){
+    if (hasAudioUnlock()){
+      openOffer();
+    } else {
+      primeOfferAudio().finally(() => openOffer());
+    }
+  }
 })();
 
 // Mobile nav toggle

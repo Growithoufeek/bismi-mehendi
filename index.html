@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css?v=2026-05-23-1" />
+    <link rel="stylesheet" href="./styles.css?v=2026-05-23-9" />
     <script src="./config.js?v=2025-10-07-2"></script>
   </head>
   <body>
@@ -240,10 +240,43 @@
 
     <!-- Eid Festive Offer (fullscreen on visit) -->
     <div class="offer-modal" id="offer-modal" role="dialog" aria-modal="true" aria-labelledby="offer-title" aria-hidden="true">
+      <div class="offer-modal-bg" aria-hidden="true">
+        <video
+          class="offer-logo-video"
+          id="offer-logo-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+        >
+          <source src="assets/images/copy.mp4" type="video/mp4" />
+          <source src="assets/images/copy.mp4.mov" type="video/quicktime" />
+        </video>
+        <div class="offer-modal-tint"></div>
+      </div>
+      <audio id="offer-music" autoplay loop preload="auto" src="assets/images/bgm.mp3"></audio>
+      <button type="button" class="offer-sound-toggle" id="offer-sound-toggle" aria-label="Mute music" aria-pressed="true" hidden>
+        <svg class="offer-sound-mute-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M15.5 8.5a5 5 0 010 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M17.8 6.2a8.5 8.5 0 010 11.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <svg class="offer-sound-unmute-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M16 9l5 5M21 9l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
       <button type="button" class="offer-close" id="offer-close" aria-label="Close offer">×</button>
+      <button type="button" class="offer-audio-unlock" id="offer-audio-unlock" aria-label="Tap to start festive music and view offer" hidden>
+        <span class="offer-audio-unlock-card">
+          <span class="offer-audio-unlock-eyebrow">Eid Mubarak 💫</span>
+          <span class="offer-audio-unlock-title">Celebarate Eid</span>
+          <span class="offer-audio-unlock-hint">With our Henna-cones
+      </button>
       <div class="offer-modal-inner">
-        <p class="offer-eyebrow">Eid Seasonal Sale</p>
-        <h2 class="offer-title" id="offer-title">Festive Offer — Limited Time</h2>
+        <p class="offer-eyebrow">Eid Al Adha  Sale</p>
+        <h2 class="offer-title" id="offer-title">Henna cones — at your doorstep</h2>
         <div class="offer-image-wrap">
           <img src="assets/images/ad.jpg" alt="BISMI Eid festive sale — current offer" />
         </div>
@@ -308,7 +341,7 @@
       <div class="lightbox-dots" id="lightbox-dots" role="tablist" aria-label="Gallery navigation"></div>
     </div>
 
-    <script src="./script.js?v=2026-05-23-1" defer></script>
+    <script src="./script.js?v=2026-05-23-9" defer></script>
   </body>
   </html>
 
